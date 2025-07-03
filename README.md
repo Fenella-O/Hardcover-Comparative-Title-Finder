@@ -32,45 +32,42 @@ All API requests are handled through a secure backend, so your API key is never 
 ```bash
 git clone https://github.com/Fenella-O/Hardcover-Comparative-Title-Finder.git
 cd Hardcover-Comparative-Title-Finder
-'''
+```
 
 ### 2. Set Up the Backend
-'''bash
-Copy
-Edit
+```bash
+
 cd secure-backend
 npm install
+```
 
 ### 3. Create a .env File (Use Your Own API Key)
 Inside the secure-backend/ folder, create a file called .env:
 
-ini
-Copy
-Edit
+```ini
+
 API_KEY=your-hardcover-api-key-here
+```
 ⚠️ This file is not committed to GitHub because it is listed in .gitignore.
 ✅ Your API key will remain private and is only used by the backend server.
 
-###4. Start the Backend Server
-bash
-Copy
-Edit
+### 4. Start the Backend Server
+```bash
 node server.js
+```
 This launches the local backend server, which securely proxies your requests to the Hardcover API.
 
-###5. Open the Frontend
+### 5. Open the Frontend
 Open the following file in your browser:
 
-arduino
-Copy
-Edit
+```arduino
 public/main.html
+```
 You can now enter a keyword or genre and receive comparable book titles — powered by your backend server.
 
-###📁 Folder Structure
-bash
-Copy
-Edit
+### 📁 Folder Structure
+```bash
+
 Hardcover-Comparative-Title-Finder/
 ├── .vscode/              # VS Code config
 ├── public/               # Frontend: HTML, JS, and CSS
@@ -83,17 +80,19 @@ Hardcover-Comparative-Title-Finder/
 │   ├── package.json
 ├── .gitignore
 └── README.md
-📦 .env.example
+```
+
+# 📦 .env.example
 To help others get started, this project includes a .env.example file that shows what environment variables are required:
 
-ini
-Copy
-Edit
+```ini
+
 # .env.example
 API_KEY=your-hardcover-api-key-here
+```
 They can rename this to .env and insert their own API key.
 
-###🧠 About the Project
+### 🧠 About the Project
 As a computer science graduate with a creative writing background, I built this tool to combine technical execution with publishing insight. It’s designed to assist editors, agents, and authors in finding comp titles — helping bring strong books to the right audiences with smarter positioning.
 
 This project also demonstrates:
@@ -104,5 +103,5 @@ Secure backend patterns for key management
 
 A clean user-facing experience built with lightweight frontend tech
 
-###📄 License
+### 📄 License
 This project is licensed under the MIT License — free to use, modify, and share.
