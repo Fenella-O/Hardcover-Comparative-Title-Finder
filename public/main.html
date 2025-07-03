@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Story Search Form</title>
+    <link rel="stylesheet" href="main.css" />
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <h1 id="title">Comparative Titles Finder</h1>
+
+    <form id="searchForm">
+      <label for="type">Type</label>
+      <select id="type" name="type">
+        <option value="Fiction">Fiction</option>
+        <option value="Non-Fiction">Non-Fiction</option>
+      </select>
+
+      <label for="genre">Genre</label>
+      <select id="genre" name="genre">
+        <option value="">-- Select Genre --</option>
+        <option value="Non-Fiction">Non-Fiction</option>
+        <option value="Dystopian">Dystopian</option>
+        <option value="Romance">Romance</option>
+        <option value="Contemporary Fiction">Contemporary Fiction</option>
+        <option value="Travel">Travel</option>
+        <option value="Fantasy">Fantasy</option>
+        <option value="Science Fiction">Science Fiction</option>
+        <option value="Horror">Horror</option>
+        <option value="Thriller">Thriller</option>
+      </select>
+
+      <label for="subgenre">Subgenre</label>
+      <select id="subgenre" name="subgenre">
+        <option value="">-- Select Subgenre --</option>
+      </select>
+
+      <label for="themes">Themes/Topics</label>
+      <div class="input-group">
+        <input
+          type="text"
+          id="themeInput"
+          placeholder="Type a theme and press Enter"
+        />
+        <div id="themeList" class="tag-list"></div>
+      </div>
+
+      <label for="category">Category</label>
+      <select id="category" name="category">
+        <option value="Young Adult">Young Adult</option>
+        <option value="Adult">Adult</option>
+      </select>
+
+      <label for="doesNotInclude">Does Not Include</label>
+      <div class="input-group">
+        <input
+          type="text"
+          id="excludeInput"
+          placeholder="Type a word and press Enter"
+        />
+        <div id="excludeList" class="tag-list"></div>
+      </div>
+
+      <label for="synopsis">Synopsis</label>
+      <textarea
+        id="synopsis"
+        name="synopsis"
+        rows="10"
+        placeholder="Enter a synopsis..."
+        style="resize: none"
+      ></textarea>
+      <button type="button" id="scanButton">Scan Synopsis for Key Words</button>
+
+      <br />
+      <button type="submit">Search</button>
+    </form>
+
+    <div id="result">
+      <p id="resultParagraph"></p>
+    </div>
+
+    <div id="loading" style="display: none">
+      <div class="book">
+        <div class="book__pg-shadow"></div>
+        <div class="book__pg"></div>
+        <div class="book__pg book__pg--2"></div>
+        <div class="book__pg book__pg--3"></div>
+        <div class="book__pg book__pg--4"></div>
+        <div class="book__pg book__pg--5"></div>
+      </div>
+    </div>
+  </body>
+</html>
