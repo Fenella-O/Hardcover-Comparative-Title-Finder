@@ -32,9 +32,10 @@ All API requests are handled through a secure backend, so your API key is never 
 ```bash
 git clone https://github.com/Fenella-O/Hardcover-Comparative-Title-Finder.git
 cd Hardcover-Comparative-Title-Finder
+'''
 
 ### 2. Set Up the Backend
-bash
+'''bash
 Copy
 Edit
 cd secure-backend
