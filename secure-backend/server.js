@@ -9,7 +9,7 @@ app.use(express.json());
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, '..', 'public')));
 const cors = require('cors');
-app.use(cors({ origin: 'https://compfinder.netlify.app/' })); // Enable CORS for all routes
+app.use(cors({ origin: 'https://compfinder.netlify.app' })); // Enable CORS for all routes
 
 // Serve the main HTML page
 app.get('/', (req, res) => {
