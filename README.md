@@ -1,107 +1,93 @@
-# Hardcover Comparative Title Finder 📚
+# Comparative Title Finder Using the Hardcover API
 
-A full-stack web app to help authors and publishers find comparable book titles using the Hardcover API. Built to merge storytelling with data-driven decision-making, this tool supports book professionals in crafting stronger pitches through comp-title research.
-
-All API requests are handled through a secure backend, so your API key is never exposed in the frontend code.
+A full-stack web app that helps authors and publishing professionals generate comparative book titles ("comps") using a secure connection to the Hardcover API.
 
 ---
 
-## 🔍 Features
+### Background
 
-- Search for comp titles based on genre, topic, or keyword
-- Secure backend proxy to keep your Hardcover API key private
-- Clean, responsive frontend using HTML, CSS, and JavaScript
-- Separation of public UI and backend server logic
+In traditional publishing, authors are expected to provide **comparative titles** when querying agents or editors. These comps help situate the book in the market and show how it aligns with current trends or audience expectations. For many writers, especially those without access to industry tools, this research is time-consuming or unclear.
 
----
-
-## 🛠️ Tech Stack
-
-| Layer       | Tools / Languages       |
-|-------------|--------------------------|
-| Frontend    | HTML, CSS, JavaScript    |
-| Backend     | Node.js, Express         |
-| Integration | Hardcover API, dotenv    |
+I built this app as both a software developer and a writer. It streamlines the comp title discovery process by connecting directly to a curated books database and applying filters based on your manuscript’s synopsis, themes, and genre. It’s meant to assist not just authors, but also agents, editors, and marketers making data-driven decisions in publishing.
 
 ---
 
-## 🚀 Getting Started
+### How it Works
 
-### 1. Clone the Repository
+1. You enter details about your manuscript, including:
 
-```bash
-git clone https://github.com/Fenella-O/Hardcover-Comparative-Title-Finder.git
-cd Hardcover-Comparative-Title-Finder
-```
+   - Genre and subgenre
+   - Target category (fiction or nonfiction)
+   - Themes and keywords
+   - A full synopsis (500–1000 words)
 
-### 2. Set Up the Backend
-```bash
+2. The backend sends a secure request to the Hardcover API with that data.
 
-cd secure-backend
-npm install
-```
+3. Results are filtered to show recent, relevant titles that match your book’s subject matter and tone — excluding any keywords you explicitly want to avoid.
 
-### 3. Create a .env File (Use Your Own API Key)
-Inside the secure-backend/ folder, create a file called .env:
+---
 
-```ini
+### Tech Stack
 
-API_KEY=your-hardcover-api-key-here
-```
-⚠️ This file is not committed to GitHub because it is listed in .gitignore.
-✅ Your API key will remain private and is only used by the backend server.
+**Frontend**
 
-### 4. Start the Backend Server
-```bash
-node server.js
-```
-This launches the local backend server, which securely proxies your requests to the Hardcover API.
+- HTML
+- CSS
+- JavaScript
 
-### 5. Open the Frontend
-Open the following file in your browser:
+**Backend**
 
-```arduino
-public/main.html
-```
-You can now enter a keyword or genre and receive comparable book titles — powered by your backend server.
+- Node.js
+- Express
+- dotenv
 
-### 📁 Folder Structure
-```bash
+**Integration**
 
-Hardcover-Comparative-Title-Finder/
-├── .vscode/              # VS Code config
-├── public/               # Frontend: HTML, JS, and CSS
-│   ├── main.html         # Entry point
-│   ├── comps.html, js    # Comp titles UI
-├── secure-backend/       # Backend server (Node + Express)
-│   ├── .env              # Contains your private API key (NOT committed)
-│   ├── .env.example      # Setup reference (safe to share)
-│   ├── server.js         # Backend logic and API proxy
-│   ├── package.json
-├── .gitignore
-└── README.md
-```
+- Hardcover API
 
-# 📦 .env.example
-To help others get started, this project includes a .env.example file that shows what environment variables are required:
+---
 
-```ini
+### Use the Live Demo
 
-# .env.example
-API_KEY=your-hardcover-api-key-here
-```
-They can rename this to .env and insert their own API key.
+- Frontend: [https://compfinder.netlify.app](https://compfinder.netlify.app)
 
-### 🧠 About the Project
-As a computer science graduate with a creative writing background, I built this tool to combine technical execution with publishing insight. It’s designed to assist editors, agents, and authors in finding comp titles — helping bring strong books to the right audiences with smarter positioning.
+---
 
-This project also demonstrates:
+### Getting Started
 
-End-to-end API integration
+If you'd like to run the app locally:
 
-Secure backend patterns for key management
+1. **Clone the repository**
 
-A clean user-facing experience built with lightweight frontend tech
+   ```bash
+   git clone https://github.com/Fenella-O/Hardcover-Comparative-Title-Finder.git
+   cd Hardcover-Comparative-Title-Finder
+   ```
 
-### 📄 License
-This project is licensed under the MIT License — free to use, modify, and share.
+2. **Install backend dependencies**
+
+   ```bash
+   cd secure-backend
+   npm install
+   ```
+
+3. **Start the backend**
+
+   ```bash
+   node server.js
+   ```
+
+4. **Open the frontend**
+   Open `public/index.html` in your browser. You can now use the app locally.
+
+Note: The live deployment does **not** require you to provide your own API key. That’s handled securely through the backend.
+
+---
+
+### Input Example (for Tech Users)
+
+**If you're unsure what a "synopsis" should look like, here’s a safe example using _The Hitchhiker’s Guide to the Galaxy_:**
+
+> Arthur Dent is an ordinary man having a very bad day—his house is about to be demolished, and then, so is the planet. He’s rescued at the last minute by Ford Prefect, a friend who turns out to be an alien. The two hitch a ride on a passing spaceship just before Earth is destroyed to make way for an interstellar bypass. As they travel the galaxy, they meet strange characters: Zaphod Beeblebrox, a two-headed ex-President; Trillian, the only other surviving human; and Marvin, a deeply depressed robot. Along the way, Arthur discovers that the universe is far more bizarre and bureaucratic than he imagined, and that the meaning of life might just be the number 42. Blending humor, satire, and science fiction, the story explores absurdity in both cosmic and human systems.
+
+This would be appropriate as a full synopsis (500–1000 words) for the tool.
