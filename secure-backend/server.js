@@ -1,3 +1,5 @@
+const cors = require('cors');
+app.use(cors({ origin: 'https://compfinder.netlify.app/' })); // Enable CORS for all routes
 require('dotenv').config(); // Load environment variables from .env
 const express = require('express');
 const path = require('path');
