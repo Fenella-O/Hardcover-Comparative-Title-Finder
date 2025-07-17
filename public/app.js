@@ -165,20 +165,23 @@ document.addEventListener('DOMContentLoaded', function () {
     doesNotIncludeTags
   ) {
     try {
-      const response = await fetch('/find-comps', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type,
-          genre,
-          subgenre,
-          category,
-          synopsis,
-          themes: themeTags,
-          excludes: doesNotIncludeTags,
-          targetType: type,
-        }),
-      });
+      const response = await fetch(
+        'https://comp-finder-backend.onrender.com/find-comps',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type,
+            genre,
+            subgenre,
+            category,
+            synopsis,
+            themes: themeTags,
+            excludes: doesNotIncludeTags,
+            targetType: type,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
