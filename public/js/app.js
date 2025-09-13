@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Show loading animation
     if (loadingDiv) {
+      window.scrollTo(0, document.body.scrollHeight);
       loadingDiv.style.display = 'flex';
     }
 
