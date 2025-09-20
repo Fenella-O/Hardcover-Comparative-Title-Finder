@@ -12,6 +12,11 @@ I built this app as both a software developer and a writer. It streamlines the c
 
 ---
 
+### Progess 
+For progress updates check the GitHub project board [here](https://github.com/users/Fenella-O/projects/3).
+
+---
+
 ### How it Works
 
 1. You enter details about your manuscript, including:
