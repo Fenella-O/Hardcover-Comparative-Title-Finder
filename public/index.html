@@ -2,24 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Story Search Form</title>
+    <title>Fiction Comparative Titles Finder</title>
     <link rel="stylesheet" href="main.css" />
     <script defer src="js/app.js"></script>
   </head>
   <body>
-    <h1 id="title">Comparative Titles Finder</h1>
+    <h1 id="title">Fiction Comparative Titles Finder</h1>
 
     <form id="searchForm">
-      <label for="type">Type</label>
-      <select id="type" name="type">
-        <option value="Fiction">Fiction</option>
-        <option value="Non-Fiction">Non-Fiction</option>
-      </select>
-
       <label for="genre">Genre</label>
       <select id="genre" name="genre">
         <option value="">-- Select Genre --</option>
-        <option value="Non-Fiction">Non-Fiction</option>
         <option value="Dystopian">Dystopian</option>
         <option value="Romance">Romance</option>
         <option value="Contemporary Fiction">Contemporary Fiction</option>
@@ -34,6 +27,16 @@
       <select id="subgenre" name="subgenre">
         <option value="">-- Select Subgenre --</option>
       </select>
+
+      <label for="authors">Similar Authors</label>
+      <div class="input-group">
+        <input
+          type="text"
+          id="authorInput"
+          placeholder="Type an author and press Enter"
+        />
+        <div id="authorList" class="tag-list"></div>
+      </div>
 
       <label for="themes">Themes/Topics</label>
       <div class="input-group">
@@ -50,16 +53,6 @@
         <option value="Young Adult">Young Adult</option>
         <option value="Adult">Adult</option>
       </select>
-
-      <label for="doesNotInclude">Does Not Include</label>
-      <div class="input-group">
-        <input
-          type="text"
-          id="excludeInput"
-          placeholder="Type a word and press Enter"
-        />
-        <div id="excludeList" class="tag-list"></div>
-      </div>
 
       <label for="synopsis">Synopsis</label>
       <textarea
