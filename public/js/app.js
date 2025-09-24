@@ -1,71 +1,90 @@
 // Main application script for WritingCompsApp
 // Handles form logic, dynamic dropdowns, tag input, loading animation, and keyword extraction
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
   // Get references to key DOM elements
-  const form = document.getElementById('searchForm');
-  const scanButton = document.getElementById('scanButton');
-  const genreSelect = document.getElementById('genre');
-  const subgenreSelect = document.getElementById('subgenre');
-  const loadingDiv = document.getElementById('loading');
+  const form = document.getElementById("searchForm");
+  const scanButton = document.getElementById("scanButton");
+  const genreSelect = document.getElementById("genre");
+  const subgenreSelect = document.getElementById("subgenre");
+  const loadingDiv = document.getElementById("loading");
 
   // Mapping of genres to their subgenres for dynamic dropdown population
   const subgenresByGenre = {
-    'Non-Fiction': [
-      'Memoir',
-      'Biography',
-      'Historical Nonfiction',
-      'Self-Help',
-      'True Crime',
+    Dystopian: [
+      "Action Dystopian",
+      "Literary Dystopian",
+      "Sci-Fi Dystopian",
+      "Post-Apocalyptic",
     ],
-    Dystopian: ['Action Dystopian', 'Literary Dystopian'],
     Romance: [
-      'Historical Romance',
-      'Contemporary Romance',
-      'Dark Romance',
-      'Romantic Suspense',
+      "Historical Romance",
+      "Contemporary Romance",
+      "Dark Romance",
+      "Romantic Suspense",
+      "Fantasy Romance",
+      "Regency Romance",
+      "Romantic Comedy",
     ],
-    'Contemporary Fiction': [
-      'Literary Fiction',
-      'Coming of Age',
-      'Domestic Fiction',
+    "Contemporary Fiction": [
+      "Literary Fiction",
+      "Coming of Age",
+      "Domestic Fiction",
+      "Contemporary",
     ],
-    Travel: ['Adventure Travel', 'Cultural Travel', 'Travel Memoir'],
     Fantasy: [
-      'Literary Fantasy',
-      'High Fantasy',
-      'Urban Fantasy',
-      'Dark Fantasy',
+      "Literary Fantasy",
+      "High Fantasy",
+      "Urban Fantasy",
+      "Dark Fantasy",
+      "Romantic Fantasy",
+      "Low Fantasy",
+      "Paranormal",
+      "Magical Realism",
+      "Low Fantasy",
+      "Paranormal",
+      "Magical Realism",
+      "Steampunk",
+      "Sword and Sorcery",
+      "Epic Fantasy",
     ],
-    'Science Fiction': [
-      'Space Opera',
-      'Cyberpunk',
-      'Time Travel',
-      'Apocalyptic Sci-Fi',
+    "Science Fiction": [
+      "Space Opera",
+      "Cyberpunk",
+      "Time Travel",
+      "Apocalyptic Sci-Fi",
+      "Military Sci-Fi",
+      "Cosmic Horror",
+      "Environmental Sci-Fi",
     ],
     Horror: [
-      'Psychological Horror',
-      'Supernatural Horror',
-      'Gothic Horror',
-      'Body Horror',
+      "Psychological Horror",
+      "Supernatural Horror",
+      "Gothic Horror",
+      "Body Horror",
+      "Slasher",
+      "Folk Horror",
+      "Cosmic Horror",
+      "Monster Horror",
     ],
     Thriller: [
-      'Psychological Thriller',
-      'Political Thriller',
-      'Techno Thriller',
-      'Crime Thriller',
+      "Psychological Thriller",
+      "Political Thriller",
+      "Techno Thriller",
+      "Crime Thriller",
     ],
+    Mystery: ["Cozy Mystery", "Detective Mystery"],
   };
 
   // Update subgenre dropdown based on selected genre
-  genreSelect.addEventListener('change', function () {
+  genreSelect.addEventListener("change", function () {
     const selectedGenre = genreSelect.value;
     subgenreSelect.innerHTML =
       '<option value="">-- Select Subgenre --</option>';
 
     if (subgenresByGenre[selectedGenre]) {
       subgenresByGenre[selectedGenre].forEach((sub) => {
-        const option = document.createElement('option');
+        const option = document.createElement("option");
         option.value = sub;
         option.textContent = sub;
         subgenreSelect.appendChild(option);
@@ -78,49 +97,48 @@ document.addEventListener('DOMContentLoaded', function () {
     const input = document.getElementById(inputId);
     const list = document.getElementById(listId);
 
-    input.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && input.value.trim() !== '') {
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && input.value.trim() !== "") {
         e.preventDefault();
         const tagText = input.value.trim();
 
-        const tag = document.createElement('div');
-        tag.className = 'tag';
+        const tag = document.createElement("div");
+        tag.className = "tag";
         tag.innerHTML = `${tagText} <span class="remove">&times;</span>`;
 
         tag
-          .querySelector('.remove')
-          .addEventListener('click', () => tag.remove());
+          .querySelector(".remove")
+          .addEventListener("click", () => tag.remove());
         list.appendChild(tag);
-        input.value = '';
+        input.value = "";
       }
     });
   }
 
-  // Initialize tag input handlers for theme and exclusion lists
-  handleTagInput('themeInput', 'themeList');
-  handleTagInput('excludeInput', 'excludeList');
+  // Initialize tag input handlers for theme and author lists
+  handleTagInput("themeInput", "themeList");
+  handleTagInput("authorInput", "authorList");
 
   // Attach scan button event if present
   if (scanButton) {
-    scanButton.addEventListener('click', scanSynopsis);
+    scanButton.addEventListener("click", scanSynopsis);
   }
 
   // Handle form submission: validate, show loading, and trigger comps generation
-  form.addEventListener('submit', function (e) {
+  form.addEventListener("submit", function (e) {
     e.preventDefault();
-    const type = document.getElementById('type').value;
     const genre = genreSelect.value;
     const subgenre = subgenreSelect.value;
-    const category = document.getElementById('category').value;
-    const synopsis = document.getElementById('synopsis').value;
+    const category = document.getElementById("category").value;
+    const synopsis = document.getElementById("synopsis").value;
 
-    // Gather tags from theme and exclusion lists
+    // Gather tags from theme and author lists
     const themeTags = Array.from(
-      document.querySelectorAll('#themeList .tag')
-    ).map((tag) => tag.textContent.replace('×', '').trim());
-    const doesNotIncludeTags = Array.from(
-      document.querySelectorAll('#excludeList .tag')
-    ).map((tag) => tag.textContent.replace('×', '').trim());
+      document.querySelectorAll("#themeList .tag")
+    ).map((tag) => tag.textContent.replace("×", "").trim());
+    const authors = Array.from(
+      document.querySelectorAll("#authorList .tag")
+    ).map((tag) => tag.textContent.replace("×", "").trim());
 
     // Basic validation for required fields
     if (
@@ -130,26 +148,18 @@ document.addEventListener('DOMContentLoaded', function () {
       !synopsis ||
       themeTags.length === 0
     ) {
-      alert('Please complete all required fields and add at least one theme.');
+      alert("Please complete all required fields and add at least one theme.");
       return;
     }
 
     // Show loading animation
     if (loadingDiv) {
       window.scrollTo(0, document.body.scrollHeight);
-      loadingDiv.style.display = 'flex';
+      loadingDiv.style.display = "flex";
     }
 
     // Call function to generate comparative titles
-    generateComps(
-      type,
-      genre,
-      subgenre,
-      category,
-      synopsis,
-      themeTags,
-      doesNotIncludeTags
-    );
+    generateComps(genre, subgenre, category, authors, synopsis, themeTags);
   });
 
   /**
@@ -157,29 +167,26 @@ document.addEventListener('DOMContentLoaded', function () {
    * Stores results in localStorage and redirects to results page.
    */
   async function generateComps(
-    type,
     genre,
     subgenre,
     category,
+    authors,
     synopsis,
-    themeTags,
-    doesNotIncludeTags
+    themeTags
   ) {
     try {
       const response = await fetch(
-        'https://comp-finder-backend.onrender.com/find-comps',
+        "https://comp-finder-backend.onrender.com/find-comps",
         {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            type,
             genre,
             subgenre,
             category,
             synopsis,
             themes: themeTags,
-            excludes: doesNotIncludeTags,
-            targetType: type,
+            authors: authors,
           }),
         }
       );
@@ -189,20 +196,20 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       const data = await response.json();
-      localStorage.setItem('compsResults', JSON.stringify(data));
+      localStorage.setItem("compsResults", JSON.stringify(data));
 
       // Hide loading animation before redirect
       if (loadingDiv) {
-        loadingDiv.style.display = 'none';
+        loadingDiv.style.display = "none";
       }
 
-      window.location.href = 'comps.html';
+      window.location.href = "comps.html";
     } catch (error) {
-      console.error('Error generating comps:', error);
-      alert('An error occurred while generating comparative titles.');
+      console.error("Error generating comps:", error);
+      alert("An error occurred while generating comparative titles.");
 
       if (loadingDiv) {
-        loadingDiv.classList.remove('animate');
+        loadingDiv.classList.remove("animate");
       }
     }
   }
@@ -212,52 +219,52 @@ document.addEventListener('DOMContentLoaded', function () {
    * Allows user to confirm and add keywords as theme tags.
    */
   function scanSynopsis() {
-    const synopsis = document.getElementById('synopsis').value;
+    const synopsis = document.getElementById("synopsis").value;
 
     // Common stop words to exclude from keyword extraction
     const stopWords = new Set([
-      'the',
-      'and',
-      'but',
-      'with',
-      'from',
-      'that',
-      'this',
-      'what',
-      'where',
-      'when',
-      'how',
-      'about',
-      'a',
-      'an',
-      'in',
-      'on',
-      'at',
-      'to',
-      'for',
-      'of',
-      'is',
-      'are',
-      'was',
-      'were',
-      'be',
-      'been',
-      'has',
-      'had',
-      'have',
-      'it',
-      'as',
-      'by',
-      'story',
-      'means',
-      'place',
-      'against',
+      "the",
+      "and",
+      "but",
+      "with",
+      "from",
+      "that",
+      "this",
+      "what",
+      "where",
+      "when",
+      "how",
+      "about",
+      "a",
+      "an",
+      "in",
+      "on",
+      "at",
+      "to",
+      "for",
+      "of",
+      "is",
+      "are",
+      "was",
+      "were",
+      "be",
+      "been",
+      "has",
+      "had",
+      "have",
+      "it",
+      "as",
+      "by",
+      "story",
+      "means",
+      "place",
+      "against",
     ]);
 
     // Process synopsis: lowercase, remove punctuation, split, filter, and count
     const synopsisWords = synopsis
       .toLowerCase()
-      .replace(/[^\w\s]/g, '')
+      .replace(/[^\w\s]/g, "")
       .split(/\s+/)
       .filter((word) => word.length > 3 && !stopWords.has(word));
 
@@ -273,55 +280,55 @@ document.addEventListener('DOMContentLoaded', function () {
       .map((entry) => entry[0]);
 
     // Create popup for keyword review
-    const popup = document.createElement('div');
-    popup.id = 'keywordPopup';
-    popup.style.position = 'fixed';
-    popup.style.top = '50%';
-    popup.style.left = '50%';
-    popup.style.transform = 'translate(-50%, -50%)';
-    popup.style.backgroundColor = '#5D200E';
-    popup.style.padding = '20px';
-    popup.style.boxShadow = '0 0 20px rgba(0, 0, 0, 0.3)';
-    popup.style.zIndex = '1000';
-    popup.style.borderRadius = '10px';
-    popup.style.maxWidth = '400px';
-    popup.style.textAlign = 'center';
-    popup.style.color = '#fff';
+    const popup = document.createElement("div");
+    popup.id = "keywordPopup";
+    popup.style.position = "fixed";
+    popup.style.top = "50%";
+    popup.style.left = "50%";
+    popup.style.transform = "translate(-50%, -50%)";
+    popup.style.backgroundColor = "#5D200E";
+    popup.style.padding = "20px";
+    popup.style.boxShadow = "0 0 20px rgba(0, 0, 0, 0.3)";
+    popup.style.zIndex = "1000";
+    popup.style.borderRadius = "10px";
+    popup.style.maxWidth = "400px";
+    popup.style.textAlign = "center";
+    popup.style.color = "#fff";
 
     // Popup title
-    const popupTitle = document.createElement('h3');
-    popupTitle.textContent = 'Review Extracted Keywords';
-    popupTitle.style.color = '#fff';
+    const popupTitle = document.createElement("h3");
+    popupTitle.textContent = "Review Extracted Keywords";
+    popupTitle.style.color = "#fff";
     popup.appendChild(popupTitle);
 
     // Container for keyword tags
-    const keywordContainer = document.createElement('div');
-    keywordContainer.style.display = 'flex';
-    keywordContainer.style.flexWrap = 'wrap';
-    keywordContainer.style.justifyContent = 'center';
-    keywordContainer.style.margin = '10px 0';
+    const keywordContainer = document.createElement("div");
+    keywordContainer.style.display = "flex";
+    keywordContainer.style.flexWrap = "wrap";
+    keywordContainer.style.justifyContent = "center";
+    keywordContainer.style.margin = "10px 0";
 
     // Add each keyword as a removable tag
     extractedKeywords.forEach((keyword) => {
-      const tag = document.createElement('div');
-      tag.style.margin = '5px';
-      tag.style.padding = '5px 10px';
-      tag.style.backgroundColor = '#5D200E';
-      tag.style.borderRadius = '15px';
-      tag.style.display = 'inline-flex';
-      tag.style.alignItems = 'center';
-      tag.style.color = '#fff';
+      const tag = document.createElement("div");
+      tag.style.margin = "5px";
+      tag.style.padding = "5px 10px";
+      tag.style.backgroundColor = "#5D200E";
+      tag.style.borderRadius = "15px";
+      tag.style.display = "inline-flex";
+      tag.style.alignItems = "center";
+      tag.style.color = "#fff";
 
-      const text = document.createElement('span');
+      const text = document.createElement("span");
       text.textContent = keyword;
       tag.appendChild(text);
 
-      const remove = document.createElement('span');
-      remove.textContent = ' ×';
-      remove.style.cursor = 'pointer';
-      remove.style.marginLeft = '8px';
-      remove.style.color = '#fff';
-      remove.addEventListener('click', () => {
+      const remove = document.createElement("span");
+      remove.textContent = " ×";
+      remove.style.cursor = "pointer";
+      remove.style.marginLeft = "8px";
+      remove.style.color = "#fff";
+      remove.addEventListener("click", () => {
         keywordContainer.removeChild(tag);
       });
 
@@ -332,26 +339,26 @@ document.addEventListener('DOMContentLoaded', function () {
     popup.appendChild(keywordContainer);
 
     // Confirm button to add selected keywords as theme tags
-    const confirmButton = document.createElement('button');
-    confirmButton.textContent = '✓ Confirm';
-    confirmButton.style.marginTop = '15px';
-    confirmButton.style.padding = '8px 16px';
-    confirmButton.style.fontSize = '16px';
-    confirmButton.addEventListener('click', () => {
+    const confirmButton = document.createElement("button");
+    confirmButton.textContent = "✓ Confirm";
+    confirmButton.style.marginTop = "15px";
+    confirmButton.style.padding = "8px 16px";
+    confirmButton.style.fontSize = "16px";
+    confirmButton.addEventListener("click", () => {
       document.body.removeChild(popup);
 
       const finalKeywords = Array.from(
-        keywordContainer.querySelectorAll('div')
+        keywordContainer.querySelectorAll("div")
       ).map((tag) => tag.firstChild.textContent.trim());
 
-      const themeList = document.getElementById('themeList');
+      const themeList = document.getElementById("themeList");
       finalKeywords.forEach((keyword) => {
-        const tag = document.createElement('div');
-        tag.className = 'tag';
+        const tag = document.createElement("div");
+        tag.className = "tag";
         tag.innerHTML = `${keyword} <span class="remove">&times;</span>`;
         tag
-          .querySelector('.remove')
-          .addEventListener('click', () => tag.remove());
+          .querySelector(".remove")
+          .addEventListener("click", () => tag.remove());
         themeList.appendChild(tag);
       });
     });
