@@ -9,11 +9,33 @@ app.use(express.json());
 // Serve static files from the public directory
 app.use(
   cors({
-    origin: [
-      "https://compfinder.netlify.app",
-      "http://localhost:8080",
-      "http://localhost:3000",
-    ],
+    origin: function (origin, callback) {
+      // allow non-browser requests (curl, Postman) with no origin
+      if (!origin) return callback(null, true);
+
+      const whitelist = [
+        "https://compfinder.netlify.app", // production
+        "http://localhost:8080", // local dev
+        "http://localhost:3000", // other local dev
+      ];
+
+      // Always allow exact whitelist
+      if (whitelist.indexOf(origin) !== -1) {
+        return callback(null, true);
+      }
+
+      // Allow Netlify preview subdomains only when ALLOW_NETLIFY_PREVIEW is set to "true"
+      if (
+        process.env.ALLOW_NETLIFY_PREVIEW === "true" &&
+        origin.endsWith("compfinder.netlify.app")
+      ) {
+        return callback(null, true);
+      }
+
+      // Otherwise deny
+      return callback(new Error("Not allowed by CORS"));
+    },
+    optionsSuccessStatus: 204,
   })
 ); // Enable CORS for allowed origins
 
