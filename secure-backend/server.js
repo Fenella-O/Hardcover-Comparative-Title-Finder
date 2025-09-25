@@ -1,67 +1,45 @@
-require("dotenv").config(); // Load environment variables from .env
+require("dotenv").config();
 const express = require("express");
 const { GraphQLClient, gql } = require("graphql-request");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 app.use(express.json());
 
-// Serve static files from the public directory
+// Static files
+app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(
-  cors({
-    origin: function (origin, callback) {
-      // allow non-browser requests (curl, Postman) with no origin
-      if (!origin) return callback(null, true);
+  cors({ origin: process.env.CORS_ORIGIN || "https://compfinder.netlify.app" })
+);
+s;
 
-      const whitelist = [
-        "https://compfinder.netlify.app", // production
-        "http://localhost:8080", // local dev
-        "http://localhost:3000", // other local dev
-      ];
-
-      // Always allow exact whitelist
-      if (whitelist.indexOf(origin) !== -1) {
-        return callback(null, true);
-      }
-
-      // Allow Netlify preview subdomains only when ALLOW_NETLIFY_PREVIEW is set to "true"
-      if (
-        process.env.ALLOW_NETLIFY_PREVIEW === "true" &&
-        origin.endsWith("compfinder.netlify.app")
-      ) {
-        return callback(null, true);
-      }
-
-      // Otherwise deny
-      return callback(new Error("Not allowed by CORS"));
-    },
-    optionsSuccessStatus: 204,
-  })
-); // Enable CORS for allowed origins
-
-// Simple route to proxy a Bookshop.org search for a title+author and return a direct URL
-app.get("/bookshop-link", async (req, res) => {
-  const { title = "", authors = "" } = req.query;
-
-  // Minimal implementation: construct a Bookshop search URL. A real implementation
-  // could call a Bookshop API or scrape search results (be mindful of TOS).
-  if (!title) {
-    return res.status(400).json({ error: "Missing title parameter" });
-  }
-
-  const query = encodeURIComponent(`${title} ${authors}`.trim());
-  const url = `https://bookshop.org/search/results?keyword=${query}`;
-  return res.json({ url });
+// Set main HTML page
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "main.html"));
 });
 
-// Endpoint to find comparable books
+// Find comparable books endpoint
 app.post("/find-comps", async (req, res) => {
-  const { genre, subgenre, category, themes, authors } = req.body;
+  const { subgenre, category, themes, authors } = req.body;
 
   const endpoint = "https://api.hardcover.app/v1/graphql";
+
+  // Get Netlify API Token, fall back on local if needed
+  const apiToken = process.env.HARDCOVER_TOKEN || process.env.HARDCOVER_API_KEY;
+  if (!apiToken) {
+    console.error(
+      "Missing Hardcover API token. Set HARDCOVER_TOKEN (Netlify) or HARDCOVER_API_KEY (.env)."
+    );
+    return res.status(500).json({
+      error:
+        "Missing Hardcover API token. Set HARDCOVER_TOKEN (Netlify) or HARDCOVER_API_KEY (.env).",
+    });
+  }
+
   const graphQLClient = new GraphQLClient(endpoint, {
     headers: {
-      Authorization: `Bearer ${process.env.HARDCOVER_API_KEY}`,
+      Authorization: `Bearer ${apiToken}`,
     },
   });
 
@@ -75,11 +53,7 @@ app.post("/find-comps", async (req, res) => {
   `;
 
   const variables = {
-    genre,
     subgenre,
-    category,
-    themes,
-    authors,
   };
 
   try {
