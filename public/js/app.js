@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
     themeTags
   ) {
     try {
-      const response = await fetch("/.netlify/functions/find-comps", {
+      const response = await fetch("secure-backend/netlify/find-comps.js", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
