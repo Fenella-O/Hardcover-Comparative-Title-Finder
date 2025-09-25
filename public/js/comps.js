@@ -56,11 +56,16 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Function to fetch the direct Bookshop.org link via backend
+  // NOTE: Historically this call reached out to the Render backend (https://comp-finder-backend.onrender.com)
+  // to resolve a Bookshop.org link for a title+authors. You mentioned you will derive the link
+  // from the saved query results instead of using a backend. For now this function still
+  // uses a backend endpoint (currently `/.netlify/functions/bookshop-link`), but this is the
+  // exact place to replace that network call with client-side logic that builds the Bookshop URL
+  // directly from `book` (e.g., using ISBN, title and author fields from the saved results).
   async function getBookshopLink(book) {
     try {
-      const backendBase = "https://comp-finder-backend.onrender.com";
       const response = await fetch(
-        `${backendBase}/bookshop-link?title=${encodeURIComponent(
+        `/.netlify/functions/bookshop-link?title=${encodeURIComponent(
           book.title
         )}&authors=${encodeURIComponent(book.author_names?.join(" ") || "")}`
       );

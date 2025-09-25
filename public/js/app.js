@@ -175,21 +175,18 @@ document.addEventListener("DOMContentLoaded", function () {
     themeTags
   ) {
     try {
-      const response = await fetch(
-        "https://comp-finder-backend.onrender.com/find-comps",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            genre,
-            subgenre,
-            category,
-            synopsis,
-            themes: themeTags,
-            authors: authors,
-          }),
-        }
-      );
+      const response = await fetch("/.netlify/functions/find-comps", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          genre,
+          subgenre,
+          category,
+          synopsis,
+          themes: themeTags,
+          authors: authors,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
