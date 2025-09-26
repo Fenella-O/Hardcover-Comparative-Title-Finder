@@ -179,12 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          genre,
-          subgenre,
-          category,
-          synopsis,
-          themes: themeTags,
-          authors: authors,
+          author: authors[0], //Add other variables later
         }),
       });
 
