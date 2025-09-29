@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
   const resultContainer = document.getElementById("resultContainer");
   const loading = document.getElementById("loading"); // loading animation
-  const books = localStorage.getItem("compsResults");
+  const books = JSON.parse(localStorage.getItem("compsResults") || "{}");
   console.log("Books from localStorage:", books);
+
   if (!books) {
     resultContainer.innerHTML = "<p>No comparative titles found.</p>";
     return;
