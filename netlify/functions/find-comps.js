@@ -355,9 +355,12 @@ exports.handler = async (event, context) => {
       )
     );
     const sortedCompsObj = {};
-    sortedComps.forEach((value, key) => {
-      sortedCompsObj[key] = value;
-    });
+    let index = 0;
+    for (const [key, value] of sortedComps.entries()) {
+      const prefixedKey = `${String(index).padStart(4, "0")}_${key}`;
+      sortedCompsObj[prefixedKey] = value;
+      index++;
+    }
     const sortedCompsJSON = JSON.stringify(sortedCompsObj);
 
     return { statusCode: 200, body: sortedCompsJSON };
