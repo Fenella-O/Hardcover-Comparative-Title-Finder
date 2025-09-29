@@ -1,5 +1,6 @@
 const { json } = require("express");
 const { GraphQLClient, gql } = require("graphql-request");
+const fetchFN = globalThis.fetch;
 
 // Reusable selection set for book fields (string interpolation safe)
 const bookSelection = `
@@ -108,6 +109,21 @@ async function fetchBooksInList(id, client, category, genre, subgenre) {
   }
 }
 
+async function pageStatusCheck(url, authors, title) {
+  try {
+    const response = await fetchFN(url, { method: "HEAD" });
+    if (response.status === 404) {
+      let keywords = authors + " " + title;
+      keywords = keywords.replace(/ /g, "+");
+      return `https://bookshop.org/beta-search?keywords=${keywords}`;
+    } else {
+      return url;
+    }
+  } catch (error) {
+    console.error("Error retrieving Bookshop Link Status: ", error);
+  }
+}
+
 function filterBooks(books, category, genre, subgenre) {
   let filtered = books.filter((book) => {
     return (
@@ -212,8 +228,9 @@ function translateBookObject(book, points) {
         ? book.cached_tags["Tag"].map((tagObj) => tagObj.tag)
         : [],
     bookshop_link:
-      `https://bookshop.org/book/${book.default_physical_edition.isbn_13}` ||
-      "No link",
+      book.default_physical_edition.isbn_13 != null
+        ? `https://bookshop.org/book/${book.default_physical_edition.isbn_13}`
+        : `https://bookshop.org/beta-search?keywords=`,
     points: points || 0,
     bookCover: book.image.url || "",
   };
@@ -261,7 +278,6 @@ const possibleComps = new Map();
 
 exports.handler = async (event, context) => {
   try {
-    // Basic runtime validations so CLI/dev errors are easier to diagnose.
     if (!event || !event.body) {
       return {
         statusCode: 400,
@@ -348,7 +364,16 @@ exports.handler = async (event, context) => {
       const bookData = translateBookObject(books, 2);
       validateAndSet(possibleComps, books.id, bookData);
     }
+
     addPointsToBook(possibleComps, themesArr);
+    for (const [key, book] of possibleComps.entries()) {
+      book.bookshop_link = await pageStatusCheck(
+        book.bookshop_link,
+        book.author_names,
+        book.title
+      );
+    }
+
     const sortedComps = new Map(
       Array.from(possibleComps.entries()).sort(
         (a, b) => b[1].points - a[1].points
