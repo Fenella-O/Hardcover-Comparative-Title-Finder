@@ -1,14 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
   const resultContainer = document.getElementById("resultContainer");
   const loading = document.getElementById("loading"); // loading animation
-  const data = localStorage.getItem("compsResults");
-
-  if (!data) {
+  const books = localStorage.getItem("compsResults");
+  console.log("Books from localStorage:", books);
+  if (!books) {
     resultContainer.innerHTML = "<p>No comparative titles found.</p>";
     return;
   }
-
-  const books = JSON.parse(data);
 
   if (books.length === 0) {
     resultContainer.innerHTML =
@@ -18,12 +16,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Show loading animation
   loading.style.display = "block";
+  loading.style.width = "50%";
+  loading.style.margin = "20px auto";
 
   // Create all book cards immediately
-  const linkElements = []; // will store <a> elements to update later
+  // will store <a> elements to update later
 
-  books.forEach((book) => {
-    const imageUrl = book.image?.url || "";
+  Object.values(books).forEach((book) => {
+    const imageUrl = book.image;
     const card = document.createElement("div");
     card.className = "book-card";
     card.innerHTML = `
@@ -51,40 +51,8 @@ document.addEventListener("DOMContentLoaded", function () {
       </div>
     `;
     const linkSpan = card.querySelector(".bookshop-link");
-    linkElements.push({ book, linkSpan }); // store for later update
+    linkSpan.innerHTML = book.bookshop_link; // store for later update
     resultContainer.appendChild(card);
-  });
-
-  // Function to fetch the direct Bookshop.org link via backend
-  // NOTE: Historically this call reached out to the Render backend (https://comp-finder-backend.onrender.com)
-  // to resolve a Bookshop.org link for a title+authors. You mentioned you will derive the link
-  // from the saved query results instead of using a backend. For now this function still
-  // uses a backend endpoint (currently `/.netlify/functions/bookshop-link`), but this is the
-  // exact place to replace that network call with client-side logic that builds the Bookshop URL
-  // directly from `book` (e.g., using ISBN, title and author fields from the saved results).
-  async function getBookshopLink(book) {
-    try {
-      const response = await fetch(
-        `/.netlify/functions/bookshop-link?title=${encodeURIComponent(
-          book.title
-        )}&authors=${encodeURIComponent(book.author_names?.join(" ") || "")}`
-      );
-      const data = await response.json();
-      return data.url || "Not found on Bookshop.org.";
-    } catch (err) {
-      console.error(err);
-      return "Not found on Bookshop.org.";
-    }
-  }
-
-  // Fetch links asynchronously and update each card
-  linkElements.forEach(async ({ book, linkSpan }) => {
-    const url = await getBookshopLink(book);
-    if (url.startsWith("http")) {
-      linkSpan.innerHTML = `<a href="${url}" target="_blank">Bookshop.org</a>`;
-    } else {
-      linkSpan.textContent = url; // shows "Not found on Bookshop.org."
-    }
   });
 
   loading.style.display = "none";

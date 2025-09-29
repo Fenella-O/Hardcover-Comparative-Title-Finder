@@ -1,8 +1,7 @@
-// Main application script for WritingCompsApp
-// Handles form logic, dynamic dropdowns, tag input, loading animation, and keyword extraction
+//Main logic for form handling and interaction
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Get references to key DOM elements
+  // Get references to DOM elements
   const form = document.getElementById("searchForm");
   const scanButton = document.getElementById("scanButton");
   const genreSelect = document.getElementById("genre");
@@ -92,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Utility function to handle tag input for themes and exclusions
+  // Utility function to handle tag input for themes and authors
   function handleTagInput(inputId, listId) {
     const input = document.getElementById(inputId);
     const list = document.getElementById(listId);
@@ -130,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const genre = genreSelect.value;
     const subgenre = subgenreSelect.value;
     const category = document.getElementById("category").value;
-    const synopsis = document.getElementById("synopsis").value;
 
     // Gather tags from theme and author lists
     const themeTags = Array.from(
@@ -141,13 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ).map((tag) => tag.textContent.replace("×", "").trim());
 
     // Basic validation for required fields
-    if (
-      !genre ||
-      !subgenre ||
-      !category ||
-      !synopsis ||
-      themeTags.length === 0
-    ) {
+    if (!genre || !subgenre || !category || themeTags.length === 0) {
       alert("Please complete all required fields and add at least one theme.");
       return;
     }
@@ -159,27 +151,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Call function to generate comparative titles
-    generateComps(genre, subgenre, category, authors, synopsis, themeTags);
+    generateComps(genre, subgenre, category, authors, themeTags);
   });
 
-  /**
-   * Sends a POST request to the server to generate comparative titles.
-   * Stores results in localStorage and redirects to results page.
-   */
-  async function generateComps(
-    genre,
-    subgenre,
-    category,
-    authors,
-    synopsis,
-    themeTags
-  ) {
+  // Sends POST request to serverless function to get comparative titles
+
+  async function generateComps(genre, subgenre, category, authors, themeTags) {
     try {
       const response = await fetch("/.netlify/functions/find-comps", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          author: authors[0], //Add other variables later
+          genre: genre,
+          subgenre: subgenre,
+          category: category,
+          themes: themeTags,
+          author: authors || [],
         }),
       });
 
@@ -187,6 +174,7 @@ document.addEventListener("DOMContentLoaded", function () {
         throw new Error(`Server error: ${response.status}`);
       }
 
+      // Add results to local storage
       const data = await response.json();
       localStorage.setItem("compsResults", JSON.stringify(data));
 
@@ -213,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function scanSynopsis() {
     const synopsis = document.getElementById("synopsis").value;
 
-    // Common stop words to exclude from keyword extraction
+    // Common filler words to exclude from keyword extraction
     const stopWords = new Set([
       "the",
       "and",
