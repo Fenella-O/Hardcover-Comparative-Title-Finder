@@ -122,40 +122,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (scanButton) {
     scanButton.addEventListener("click", scanSynopsis);
   }
-
-  // Handle form submission: validate, show loading, and trigger comps generation
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const genre = genreSelect.value;
-    const subgenre = subgenreSelect.value;
-    const category = document.getElementById("category").value;
-
-    // Gather tags from theme and author lists
-    const themeTags = Array.from(
-      document.querySelectorAll("#themeList .tag")
-    ).map((tag) => tag.textContent.replace("×", "").trim());
-    const authors = Array.from(
-      document.querySelectorAll("#authorList .tag")
-    ).map((tag) => tag.textContent.replace("×", "").trim());
-
-    // Basic validation for required fields
-    if (!genre || !subgenre || !category || themeTags.length === 0) {
-      alert("Please complete all required fields and add at least one theme.");
-      return;
-    }
-
-    // Show loading animation
-    if (loadingDiv) {
-      window.scrollTo(0, document.body.scrollHeight);
-      loadingDiv.style.display = "flex";
-    }
-
-    // Call function to generate comparative titles
-    generateComps(genre, subgenre, category, authors, themeTags);
-  });
-
-  // Sends POST request to serverless function to get comparative titles
-
   async function generateComps(genre, subgenre, category, authors, themeTags) {
     try {
       const response = await fetch("/.netlify/functions/find-comps", {
@@ -193,6 +159,36 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   }
+  // Handle form submission: validate, show loading, and trigger comps generation
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const genre = genreSelect.value;
+    const subgenre = subgenreSelect.value;
+    const category = document.getElementById("category").value;
+
+    // Gather tags from theme and author lists
+    const themeTags = Array.from(
+      document.querySelectorAll("#themeList .tag")
+    ).map((tag) => tag.textContent.replace("×", "").trim());
+    const authors = Array.from(
+      document.querySelectorAll("#authorList .tag")
+    ).map((tag) => tag.textContent.replace("×", "").trim());
+
+    // Basic validation for required fields
+    if (!genre || !subgenre || !category || themeTags.length === 0) {
+      alert("Please complete all required fields and add at least one theme.");
+      return;
+    }
+
+    // Show loading animation
+    if (loadingDiv) {
+      window.scrollTo(0, document.body.scrollHeight);
+      loadingDiv.style.display = "flex";
+    }
+
+    // Call function to generate comparative titles
+    generateComps(genre, subgenre, category, authors, themeTags);
+  });
 
   /**
    * Extracts keywords from the synopsis and displays them in a popup for user review.
