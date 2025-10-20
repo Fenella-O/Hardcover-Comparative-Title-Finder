@@ -1,27 +1,41 @@
 document.addEventListener("DOMContentLoaded", function () {
   const resultContainer = document.getElementById("resultContainer");
   const loading = document.getElementById("loading"); // loading animation
-  const books = JSON.parse(localStorage.getItem("compsResults") || "{}");
 
-  if (!books) {
-    resultContainer.innerHTML = "<p>No comparative titles found.</p>";
-    return;
+  // Read stored results (may be an object keyed map or an array)
+  const raw = localStorage.getItem("compsResults");
+  let books = null;
+  try {
+    books = raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    console.error("Error parsing stored compsResults:", e);
+    books = null;
   }
 
-  if (books.length === 0) {
-    resultContainer.innerHTML =
-      "<p>No comparative titles matched your criteria.</p>";
+  // Normalize empty and show helpful message
+  const isEmptyObject =
+    books &&
+    typeof books === "object" &&
+    !Array.isArray(books) &&
+    Object.keys(books).length === 0;
+  const isEmptyArray = Array.isArray(books) && books.length === 0;
+  if (!books || isEmptyObject || isEmptyArray) {
+    resultContainer.innerHTML = "<p>No comparative titles found.</p>";
+    // Ensure we clean up stale storage
+    localStorage.removeItem("compsResults");
     return;
   }
 
   // Show loading animation
-  loading.style.display = "block";
-  loading.style.width = "50%";
-  loading.style.margin = "20px auto";
+  if (loading) {
+    loading.style.display = "block";
+    loading.style.width = "50%";
+    loading.style.margin = "20px auto";
+  }
 
   // Create all book cards immediately
-
-  Object.values(books).forEach((book) => {
+  const iterable = Array.isArray(books) ? books : Object.values(books);
+  iterable.forEach((book) => {
     const card = document.createElement("div");
     card.className = "book-card";
 

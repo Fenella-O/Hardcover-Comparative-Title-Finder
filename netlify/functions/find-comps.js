@@ -1,4 +1,4 @@
-const { json } = require("express");
+//const { json } = require("express");
 const { GraphQLClient, gql } = require("graphql-request");
 const fetchFN = globalThis.fetch;
 
@@ -288,6 +288,7 @@ exports.handler = async (event, context) => {
     try {
       // Parse JSON body from POST
       payload = JSON.parse(event.body);
+      console.log("Parsed payload:", payload);
     } catch (error) {
       console.error("Error parsing input:", error);
       return {
@@ -307,6 +308,13 @@ exports.handler = async (event, context) => {
     const categoryStr = String(category);
     const themesArr = Array.isArray(themes) ? themes : [];
     const authorsArr = Array.isArray(author) ? author : [];
+    console.log("Received parameters:", {
+      genre: genreStr,
+      subgenre: subgenreStr,
+      category: categoryStr,
+      themes: themesArr,
+      authors: authorsArr,
+    });
     if (!process.env.GRAPHQL_API_URL || !process.env.HARDCOVER_TOKEN) {
       return {
         statusCode: 500,

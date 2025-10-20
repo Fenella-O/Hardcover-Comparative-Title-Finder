@@ -123,6 +123,18 @@ document.addEventListener("DOMContentLoaded", function () {
     scanButton.addEventListener("click", scanSynopsis);
   }
   async function generateComps(genre, subgenre, category, authors, themeTags) {
+    console.log(
+      "Gener: " +
+        genre +
+        ", Subg: " +
+        subgenre +
+        ", Cat: " +
+        category +
+        ", Auth: " +
+        (authors || "none") +
+        ", Themes: " +
+        themeTags
+    );
     try {
       const response = await fetch("/.netlify/functions/find-comps", {
         method: "POST",
